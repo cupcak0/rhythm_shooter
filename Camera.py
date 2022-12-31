@@ -1,21 +1,20 @@
 import numpy as np
 import pyquaternion as pq
+from Functions import *
+
 
 class Camera:
-    def __init__(self, position=np.array([0,0,0]), fov=70, aspect=16/9):
+    def __init__(self, position=np.array([0,0,0]), fov=70, aspect=16/9, x_degrees = 0, y_degrees = 0):
         self.position = position
-        self.x_degrees = 0
-        self.y_degrees = 0
-        self.angle = pq.Quaternion()
+        self.x_degrees = x_degrees
+        self.y_degrees = y_degrees
         self.fov = fov
         self.aspect = aspect
 
     # Поворачивает камеру на заданное количество градусов
     def rotate(self, x_degrees, y_degrees):
         self.x_degrees += x_degrees
-        self.y_degrees += y_degrees
+        self.y_degrees = min(max(-90, self.y_degrees+y_degrees), 90)
 
-        angle_y = pq.Quaternion(axis=[1.0,0.0,0.0], degrees=self.y_degrees)
-        angle_x = pq.Quaternion(axis=[0.0,1.0,0.0], degrees=self.x_degrees)
-        
-        self.angle = angle_x*angle_y
+    def move(self, v):
+        self.position = self.position + rotate(v, self.x_degrees, self.y_degrees)
